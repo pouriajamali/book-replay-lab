@@ -1,0 +1,160 @@
+{
+  "benchmark_schema_version": 1,
+  "sample_version": "1.1.0",
+  "created_at_utc": "2026-10-30T17:23:28.663340+00:00",
+  "source_commit": "d106edcea322bf033a6c0f6f11ab472731571195",
+  "source_sha256": {
+    "book.hpp": "136c4e1c6f69a680b799fd369eac1a36479e8cd22e36cc61d641c5980fd0098c",
+    "book_replay.cpp": "9d0597971bd90dd10784c78e2e841c9a8aabcbd04d21587fd061237cc1e06aee",
+    "book_replay.py": "d2063b08f0f7e4108642acded4d90434095b7bc3d4e773ddc06e817f83226513",
+    "benchmark.cpp": "0ded5c36b8b6df1ac841e69eb3798e1838a13e2ee1269e6aa89e89598e9e9780",
+    "benchmark.py": "c9a2eb468ccc79443425c5cb9dfd8b6ec974d88f4657f5aa954a6a5c94af6a18",
+    "run_benchmark.py": "1540ca2c0f8f7e248c6000907c13074ff765e1a8295e85d9aeb71d6aa86af297",
+    "verify.py": "f6b01418c08444b1990f4db3fa83e595b60094282f4a5f12e9f0c65c4d296a15",
+    "fixtures.json": "3183c5dc80d4ebfcb0ec6de4e4a9ec5e04330db31e1b72f5cd469a96809f9e38"
+  },
+  "environment": {
+    "platform": "Windows-11-10.0.26300-SP0",
+    "architecture": "AMD64",
+    "cpu": "Intel64 Family 6 Model 167 Stepping 1, GenuineIntel",
+    "logical_cpus": 16,
+    "python": "3.12.14",
+    "compiler": "g++.exe (GCC) 13.1.0",
+    "compiler_flags": [
+      "-std=c++20",
+      "-O2",
+      "-Wall",
+      "-Wextra",
+      "-Wpedantic",
+      "-Werror"
+    ]
+  },
+  "dataset": {
+    "synthetic": true,
+    "events": 20000,
+    "seed": 20261030,
+    "sha256": "7f5a19d2e0286e053b297e3752631e1c818a8d5411950a2c0e6d37841ced79c9",
+    "shape": "one snapshot then positive-quantity updates over 21 bid and 21 ask prices"
+  },
+  "method": {
+    "samples": 31,
+    "warmups": 3,
+    "timed_scope": "book creation, ASCII parsing, state update, status formatting, output-length consumption and book teardown; input loading and process startup excluded",
+    "execution": "single thread; sequential C++ then Python; no CPU pinning or isolated machine",
+    "percentile_scope": "batch durations, not individual-event or exchange/order latency",
+    "memory_scope": "whole process high-water resident/working set, not engine-only allocations"
+  },
+  "correctness": {
+    "passed": true,
+    "fixture_scenarios": 32,
+    "expected_state_checks_per_language": 74,
+    "generated_comparison_events": 1001,
+    "benchmark_dataset_output_sha256": "4947f95409e6c6c86bf679d55d7a37db1c791457dcd975e2b56308751e9b5029"
+  },
+  "results": [
+    {
+      "language": "C++20",
+      "event_count": 20000,
+      "output_chars": 584427,
+      "final_state": "UPDATE|1|20000|110|689|190|224",
+      "peak_resident_bytes": 7315456,
+      "batch_ns": [
+        44170200,
+        44433800,
+        43884500,
+        45078000,
+        43221900,
+        44893500,
+        44121000,
+        43699500,
+        42669100,
+        42936900,
+        42020300,
+        42332700,
+        43410700,
+        42587700,
+        44031900,
+        43905700,
+        41728900,
+        43763600,
+        42024500,
+        41890600,
+        43342600,
+        41811400,
+        43855200,
+        42872900,
+        43446400,
+        42091900,
+        43130500,
+        41943100,
+        42068800,
+        42603500,
+        44175500
+      ],
+      "batch_percentiles_ns": {
+        "p50": 43221900,
+        "p95": 44893500,
+        "p99": 45078000
+      },
+      "batch_p50_amortized_ns_per_event": 2161.095,
+      "batch_p50_events_per_second": 462728.3853787085,
+      "percentile_method": "nearest rank of 31 batch durations; tail resolution is 1/31",
+      "memory_scope": "whole process peak resident/working-set bytes, including runtime and retained input; null means unavailable"
+    },
+    {
+      "language": "Python",
+      "event_count": 20000,
+      "output_chars": 584427,
+      "final_state": "UPDATE|1|20000|110|689|190|224",
+      "peak_resident_bytes": 19427328,
+      "batch_ns": [
+        110608600,
+        110349400,
+        107336100,
+        108458800,
+        117843600,
+        118003000,
+        108659000,
+        108514700,
+        106689300,
+        107876700,
+        107106600,
+        107545100,
+        108530700,
+        103790200,
+        107718400,
+        106981000,
+        108906400,
+        108254000,
+        106739000,
+        108082100,
+        107169700,
+        106648600,
+        108072100,
+        126805700,
+        110152700,
+        107753600,
+        107694500,
+        106993900,
+        117801400,
+        106096000,
+        109376200
+      ],
+      "batch_percentiles_ns": {
+        "p50": 108072100,
+        "p95": 118003000,
+        "p99": 126805700
+      },
+      "batch_p50_amortized_ns_per_event": 5403.605,
+      "batch_p50_events_per_second": 185061.639405545,
+      "percentile_method": "nearest rank of 31 batch durations; tail resolution is 1/31",
+      "memory_scope": "whole process peak resident/working-set bytes, including runtime and retained input; null means unavailable"
+    }
+  ],
+  "limits": [
+    "Independent synthetic teaching material, not employer code or production HFT evidence.",
+    "Results compare these implementations (ordered maps vs dictionaries), not programming languages generally.",
+    "Small-sample tail percentiles are descriptive; no latency SLA, regression threshold or venue round trip is claimed.",
+    "Process memory includes language/runtime and retained input; readings are not allocator or leak measurements."
+  ]
+}

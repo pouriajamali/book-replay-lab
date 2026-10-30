@@ -86,6 +86,9 @@ explaining personal engineering decisions. No private repository was used.
 
 [Portfolio case study](https://pouriajamali.site/work/cpp-python-simulation/) · [CI runs](https://github.com/pouriaquant91/book-replay-lab/actions) · [Measurement contract](BENCHMARKS.md)
 
+[Recorded Windows measurement and interpretation](results/README.md). This is a
+machine-specific synthetic result, separate from CI correctness/smoke checks.
+
 The core C++ implementation is in `book.hpp`; `book_replay.cpp` is the CLI adapter.
 Both implementations share the documented synthetic contract, not workplace code.
 Version 1.1 adds a benchmark harness, strict shared ASCII whitespace, explicit
