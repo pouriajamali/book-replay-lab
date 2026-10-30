@@ -1,0 +1,376 @@
+[
+  {
+    "name": "snapshot and update",
+    "input": [
+      "S 10 100 6 103 4",
+      "U 11 B 101 2"
+    ],
+    "expected": [
+      "SNAPSHOT|1|10|100|6|103|4",
+      "UPDATE|1|11|101|2|103|4"
+    ]
+  },
+  {
+    "name": "replace quantity",
+    "input": [
+      "S 10 100 6 103 4",
+      "U 11 B 100 9"
+    ],
+    "expected": [
+      "SNAPSHOT|1|10|100|6|103|4",
+      "UPDATE|1|11|100|9|103|4"
+    ]
+  },
+  {
+    "name": "delete top reveals next level",
+    "input": [
+      "S 10 100 6 103 4",
+      "U 11 B 99 7",
+      "U 12 B 100 0"
+    ],
+    "expected": [
+      "SNAPSHOT|1|10|100|6|103|4",
+      "UPDATE|1|11|100|6|103|4",
+      "UPDATE|1|12|99|7|103|4"
+    ]
+  },
+  {
+    "name": "empty side",
+    "input": [
+      "S 10 100 6 103 4",
+      "U 11 A 103 0"
+    ],
+    "expected": [
+      "SNAPSHOT|1|10|100|6|103|4",
+      "UPDATE|1|11|100|6|-|-"
+    ]
+  },
+  {
+    "name": "gap then snapshot recovery",
+    "input": [
+      "S 10 100 6 103 4",
+      "U 11 B 101 2",
+      "U 13 A 104 5",
+      "U 12 B 99 4",
+      "S 20 100 8 104 3",
+      "U 21 A 103 2"
+    ],
+    "expected": [
+      "SNAPSHOT|1|10|100|6|103|4",
+      "UPDATE|1|11|101|2|103|4",
+      "GAP|0|11|101|2|103|4",
+      "NOT_READY|0|11|101|2|103|4",
+      "SNAPSHOT|1|20|100|8|104|3",
+      "UPDATE|1|21|100|8|103|2"
+    ]
+  },
+  {
+    "name": "stale update ignored",
+    "input": [
+      "S 10 100 6 103 4",
+      "U 10 B 101 2",
+      "U 9 A 102 7"
+    ],
+    "expected": [
+      "SNAPSHOT|1|10|100|6|103|4",
+      "STALE|1|10|100|6|103|4",
+      "STALE|1|10|100|6|103|4"
+    ]
+  },
+  {
+    "name": "crossed update atomic rejection",
+    "input": [
+      "S 10 100 6 103 4",
+      "U 11 B 103 1"
+    ],
+    "expected": [
+      "SNAPSHOT|1|10|100|6|103|4",
+      "CROSSED|0|10|100|6|103|4"
+    ]
+  },
+  {
+    "name": "crossed snapshot preserves previous state",
+    "input": [
+      "S 10 100 6 103 4",
+      "S 20 105 9 104 2"
+    ],
+    "expected": [
+      "SNAPSHOT|1|10|100|6|103|4",
+      "CROSSED|0|10|100|6|103|4"
+    ]
+  },
+  {
+    "name": "stale snapshot fails closed",
+    "input": [
+      "S 10 100 6 103 4",
+      "S 9 99 1 104 1"
+    ],
+    "expected": [
+      "SNAPSHOT|1|10|100|6|103|4",
+      "STALE_SNAPSHOT|0|10|100|6|103|4"
+    ]
+  },
+  {
+    "name": "disconnect requires snapshot",
+    "input": [
+      "S 10 100 6 103 4",
+      "D",
+      "U 11 B 101 2",
+      "S 10 100 6 103 4"
+    ],
+    "expected": [
+      "SNAPSHOT|1|10|100|6|103|4",
+      "DISCONNECTED|0|10|100|6|103|4",
+      "NOT_READY|0|10|100|6|103|4",
+      "SNAPSHOT|1|10|100|6|103|4"
+    ]
+  },
+  {
+    "name": "unknown delete rejected",
+    "input": [
+      "S 10 100 6 103 4",
+      "U 11 A 104 0"
+    ],
+    "expected": [
+      "SNAPSHOT|1|10|100|6|103|4",
+      "UNKNOWN_DELETE|0|10|100|6|103|4"
+    ]
+  },
+  {
+    "name": "update before snapshot",
+    "input": [
+      "U 1 B 100 2"
+    ],
+    "expected": [
+      "NOT_READY|0|0|-|-|-|-"
+    ]
+  },
+  {
+    "name": "negative number",
+    "input": [
+      "S 10 100 6 103 4",
+      "U 11 B 100 -1"
+    ],
+    "expected": [
+      "SNAPSHOT|1|10|100|6|103|4",
+      "INVALID|0|10|100|6|103|4"
+    ]
+  },
+  {
+    "name": "oversized integer",
+    "input": [
+      "S 10 100 6 103 4",
+      "U 11 A 104 1000000001"
+    ],
+    "expected": [
+      "SNAPSHOT|1|10|100|6|103|4",
+      "INVALID|0|10|100|6|103|4"
+    ]
+  },
+  {
+    "name": "zero snapshot quantity",
+    "input": [
+      "S 10 100 0 103 4"
+    ],
+    "expected": [
+      "INVALID|0|0|-|-|-|-"
+    ]
+  },
+  {
+    "name": "unknown side",
+    "input": [
+      "S 10 100 6 103 4",
+      "U 11 X 101 1"
+    ],
+    "expected": [
+      "SNAPSHOT|1|10|100|6|103|4",
+      "INVALID|0|10|100|6|103|4"
+    ]
+  },
+  {
+    "name": "extra token",
+    "input": [
+      "D extra"
+    ],
+    "expected": [
+      "INVALID|0|0|-|-|-|-"
+    ]
+  },
+  {
+    "name": "non-ascii rejected",
+    "input": [
+      "U \u0661 B 100 1"
+    ],
+    "expected": [
+      "INVALID|0|0|-|-|-|-"
+    ]
+  },
+  {
+    "name": "maximum sequence without wrap",
+    "input": [
+      "S 1000000000 100 1 103 1",
+      "U 1000000001 B 100 1"
+    ],
+    "expected": [
+      "SNAPSHOT|1|1000000000|100|1|103|1",
+      "INVALID|0|1000000000|100|1|103|1"
+    ]
+  },
+  {
+    "name": "comments whitespace and leading zeroes",
+    "input": [
+      "# synthetic comment",
+      "",
+      "  S 010 100 6 103 4  ",
+      "\tU 011 A 102 7"
+    ],
+    "expected": [
+      "SNAPSHOT|1|10|100|6|103|4",
+      "UPDATE|1|11|100|6|102|7"
+    ]
+  },
+  {
+    "name": "reject file separator",
+    "input": [
+      "S 10 100 6 103 4",
+      "S\u001c10\u001c100\u001c6\u001c103\u001c4",
+      "S 20 101 2 104 3"
+    ],
+    "expected": [
+      "SNAPSHOT|1|10|100|6|103|4",
+      "INVALID|0|10|100|6|103|4",
+      "SNAPSHOT|1|20|101|2|104|3"
+    ]
+  },
+  {
+    "name": "reject group separator",
+    "input": [
+      "S 10 100 6 103 4",
+      "S\u001d10\u001d100\u001d6\u001d103\u001d4",
+      "S 20 101 2 104 3"
+    ],
+    "expected": [
+      "SNAPSHOT|1|10|100|6|103|4",
+      "INVALID|0|10|100|6|103|4",
+      "SNAPSHOT|1|20|101|2|104|3"
+    ]
+  },
+  {
+    "name": "reject record separator",
+    "input": [
+      "S 10 100 6 103 4",
+      "S\u001e10\u001e100\u001e6\u001e103\u001e4",
+      "S 20 101 2 104 3"
+    ],
+    "expected": [
+      "SNAPSHOT|1|10|100|6|103|4",
+      "INVALID|0|10|100|6|103|4",
+      "SNAPSHOT|1|20|101|2|104|3"
+    ]
+  },
+  {
+    "name": "reject unit separator",
+    "input": [
+      "S 10 100 6 103 4",
+      "S\u001f10\u001f100\u001f6\u001f103\u001f4",
+      "S 20 101 2 104 3"
+    ],
+    "expected": [
+      "SNAPSHOT|1|10|100|6|103|4",
+      "INVALID|0|10|100|6|103|4",
+      "SNAPSHOT|1|20|101|2|104|3"
+    ]
+  },
+  {
+    "name": "reject NUL",
+    "input": [
+      "S 10 100 6 103 4",
+      "S\u000010\u0000100\u00006\u0000103\u00004",
+      "S 20 101 2 104 3"
+    ],
+    "expected": [
+      "SNAPSHOT|1|10|100|6|103|4",
+      "INVALID|0|10|100|6|103|4",
+      "SNAPSHOT|1|20|101|2|104|3"
+    ]
+  },
+  {
+    "name": "reject Control-Z",
+    "input": [
+      "S 10 100 6 103 4",
+      "S\u001a10\u001a100\u001a6\u001a103\u001a4",
+      "S 20 101 2 104 3"
+    ],
+    "expected": [
+      "SNAPSHOT|1|10|100|6|103|4",
+      "INVALID|0|10|100|6|103|4",
+      "SNAPSHOT|1|20|101|2|104|3"
+    ]
+  },
+  {
+    "name": "reject DEL",
+    "input": [
+      "S 10 100 6 103 4",
+      "S\u007f10\u007f100\u007f6\u007f103\u007f4",
+      "S 20 101 2 104 3"
+    ],
+    "expected": [
+      "SNAPSHOT|1|10|100|6|103|4",
+      "INVALID|0|10|100|6|103|4",
+      "SNAPSHOT|1|20|101|2|104|3"
+    ]
+  },
+  {
+    "name": "accept ASCII carriage return whitespace",
+    "input": [
+      "S\r10\r100\r6\r103\r4"
+    ],
+    "expected": [
+      "SNAPSHOT|1|10|100|6|103|4"
+    ]
+  },
+  {
+    "name": "accept ASCII vertical tab whitespace",
+    "input": [
+      "S\u000b10\u000b100\u000b6\u000b103\u000b4"
+    ],
+    "expected": [
+      "SNAPSHOT|1|10|100|6|103|4"
+    ]
+  },
+  {
+    "name": "accept ASCII form feed whitespace",
+    "input": [
+      "S\f10\f100\f6\f103\f4"
+    ],
+    "expected": [
+      "SNAPSHOT|1|10|100|6|103|4"
+    ]
+  },
+  {
+    "name": "reject non-ASCII whitespace",
+    "input": [
+      "S 10 100 6 103 4",
+      "S\u00a010\u00a0100\u00a06\u00a0103\u00a04",
+      "S 20 101 2 104 3"
+    ],
+    "expected": [
+      "SNAPSHOT|1|10|100|6|103|4",
+      "INVALID|0|10|100|6|103|4",
+      "SNAPSHOT|1|20|101|2|104|3"
+    ]
+  },
+  {
+    "name": "reject controls even in comments",
+    "input": [
+      "S 10 100 6 103 4",
+      "#comment\u001c",
+      "S 20 101 2 104 3"
+    ],
+    "expected": [
+      "SNAPSHOT|1|10|100|6|103|4",
+      "INVALID|0|10|100|6|103|4",
+      "SNAPSHOT|1|20|101|2|104|3"
+    ]
+  }
+]

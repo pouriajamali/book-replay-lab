@@ -1,0 +1,30 @@
+name: Verify replay and benchmark contract
+on: [push, pull_request, workflow_dispatch]
+permissions:
+  contents: read
+jobs:
+  linux:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - run: python3 -m unittest discover -s tests -v
+      - run: python3 run_benchmark.py --compiler g++ --events 1000 --samples 3 --warmups 1 --output .build/ci-smoke.json
+  windows:
+    runs-on: windows-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: msys2/setup-msys2@v2
+        with:
+          msystem: UCRT64
+          update: true
+          install: mingw-w64-ucrt-x86_64-gcc mingw-w64-ucrt-x86_64-python
+      - shell: msys2 {0}
+        run: python -m unittest discover -s tests -v
+      - shell: msys2 {0}
+        run: python run_benchmark.py --compiler g++ --events 1000 --samples 3 --warmups 1 --output .build/ci-smoke.json
