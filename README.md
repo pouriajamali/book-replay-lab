@@ -2,6 +2,8 @@
 
 [![Windows and Linux verification](https://github.com/pouriaquant91/book-replay-lab/actions/workflows/verify.yml/badge.svg)](https://github.com/pouriaquant91/book-replay-lab/actions/workflows/verify.yml)
 
+[Release v1.1.0](https://github.com/pouriaquant91/book-replay-lab/releases/tag/v1.1.0) · [Source-only ZIP](https://github.com/pouriaquant91/book-replay-lab/releases/download/v1.1.0/book-replay-lab-v1.1.0.zip) · [Checksums](https://github.com/pouriaquant91/book-replay-lab/releases/download/v1.1.0/SHA256SUMS.txt)
+
 New independent, AI-assisted portfolio teaching material, October 2026.
 Not employer code, a reconstruction/port of a private simulator, a trading
 strategy, or evidence of historical production work. No SDK, credentials,
