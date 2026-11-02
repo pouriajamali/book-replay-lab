@@ -12,6 +12,7 @@ jobs:
           persist-credentials: false
       - run: python3 -m unittest discover -s tests -v
       - run: python3 run_benchmark.py --compiler g++ --events 1000 --samples 3 --warmups 1 --output .build/ci-smoke.json
+      - run: python3 run_flat_benchmark.py --compiler g++ --events 1000 --samples 3 --warmups 1 --output .build/ci-flat-smoke.json
   windows:
     runs-on: windows-latest
     timeout-minutes: 15
@@ -28,3 +29,5 @@ jobs:
         run: python -m unittest discover -s tests -v
       - shell: msys2 {0}
         run: python run_benchmark.py --compiler g++ --events 1000 --samples 3 --warmups 1 --output .build/ci-smoke.json
+      - shell: msys2 {0}
+        run: python run_flat_benchmark.py --compiler g++ --events 1000 --samples 3 --warmups 1 --output .build/ci-flat-smoke.json

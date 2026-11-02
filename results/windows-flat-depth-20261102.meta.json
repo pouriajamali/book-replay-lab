@@ -1,0 +1,114 @@
+{
+  "schema_version": 1,
+  "experiment": "bounded-flat-depth",
+  "sample_version": "1.2.0",
+  "created_at_utc": "2026-11-02T13:03:23.212151+00:00",
+  "source_sha256": {
+    "flat_depth.hpp": "053bb0ce8f62cfef29175e9af392cfee1f70cd89fe85a74b7754d590e5dcef10",
+    "flat_depth_benchmark.cpp": "b5950600c49f3c0af1bcf78b56f779251a671d997286859d9298d9c834c9331d",
+    "run_flat_benchmark.py": "0e711b8d80d52fed071c318fef153fa624bc6c21c03d569619c9ee6f7267a52e"
+  },
+  "environment": {
+    "platform": "Windows-11-10.0.26300-SP0",
+    "architecture": "AMD64",
+    "cpu": "Intel64 Family 6 Model 167 Stepping 1, GenuineIntel",
+    "logical_cpus": 16,
+    "python": "3.12.10",
+    "compiler": "g++.exe (GCC) 13.1.0",
+    "compiler_flags": [
+      "-std=c++20",
+      "-O2",
+      "-Wall",
+      "-Wextra",
+      "-Wpedantic",
+      "-Werror"
+    ]
+  },
+  "workload": {
+    "synthetic": true,
+    "event_count_per_sample": 20000,
+    "samples": 31,
+    "warmups": 3,
+    "seed": 20261102,
+    "sha256": "1ab23e50e2d7767f2cf74f69b5047c98a59e1ebf3999862e34337a75eb865fae",
+    "shape": "128initial upserts populate64slots per side, then uniform random replacement and20percent delete; fixed disjoint tick bands"
+  },
+  "correctness": {
+    "edge_checks_passed": true,
+    "C++_ordered_map_reference_states": 20000,
+    "all128depth_slots_compared_each_event": true,
+    "Python_dictionary_checksum_matches": true
+  },
+  "method": {
+    "single_thread": true,
+    "clock": "std::chrono::steady_clock",
+    "timed_scope": "one normalized array update, top-of-book read and checksum consumption between two clock calls",
+    "excluded": "input generation, text parsing, allocation of workload/timing vectors, book construction and reset, reference checks, serialization, process startup",
+    "allocation_probe_scope": "ordinary replaceable global new/new[] calls during instrumented and aggregate timed loops; not malloc, aligned allocation or OS memory",
+    "percentile_unit": "nanoseconds per instrumented event, pooled across samples",
+    "instrumentation": "empty back-to-back clock-pair distribution measured separately; no subtraction, CPU affinity or isolated host",
+    "aggregate_scope": "separate full-workload loop with one clock pair per batch; median batch time divided by event count is amortized cost, not an event percentile",
+    "price_scope": "bid ticks1000..1063; ask ticks1100..1163; index bands cannot cross, unsupported ticks reject without resizing"
+  },
+  "event_summary_ns": {
+    "count": 620000,
+    "p50": null,
+    "p99": 100,
+    "min": 0,
+    "max": 17200,
+    "zero_observations": 480883,
+    "smallest_positive_observation": 100,
+    "median_resolution": "RESOLUTION_LIMITED",
+    "method": "nearest rank; raw instrumentation included"
+  },
+  "empty_clock_summary_ns": {
+    "count": 620000,
+    "p50": null,
+    "p99": 100,
+    "min": 0,
+    "max": 18000,
+    "zero_observations": 501019,
+    "smallest_positive_observation": 100,
+    "median_resolution": "RESOLUTION_LIMITED",
+    "method": "nearest rank; raw instrumentation included"
+  },
+  "batch_summary_ns": {
+    "count": 31,
+    "p50": 109800,
+    "p99": 156600,
+    "min": 103400,
+    "max": 156600,
+    "zero_observations": 0,
+    "smallest_positive_observation": 103400,
+    "median_resolution": "NONZERO_RAW_INSTRUMENTED",
+    "method": "nearest rank; raw instrumentation included"
+  },
+  "batch_p50_amortized_ns_per_event": 5.49,
+  "limits": [
+    "A bounded normalized-data implementation experiment, not the legacy replay API or employer code.",
+    "Individual clock calls and checksum work affect raw event timings; clock granularity can produce zero observations.",
+    "No parser, network, exchange sequencing/recovery, concurrency, order submission or production HFT latency is measured.",
+    "No comparison against the legacy map implementation is timed, so no speedup or language ranking is established."
+  ],
+  "raw_result_metadata": {
+    "event_count": 20000,
+    "samples": 31,
+    "warmups": 3,
+    "checksum": "8304707013259778974",
+    "reference_checks": 20000,
+    "ordinary_new_calls_hot_path": 0,
+    "allocation_probe_control_calls": 1,
+    "book_size_bytes": 1032,
+    "steady_clock_period_num": 1,
+    "steady_clock_period_den": 1000000000
+  },
+  "full_observation_archive": {
+    "file": "windows-flat-depth-20261102.json.gz",
+    "format": "gzip-compressed UTF-8 JSON",
+    "compressed_bytes": 93345,
+    "compressed_sha256": "dbdfe496d9aa76c1dac05309ab75067a5acabfa58ed1a2afb6fefe17ee83c98c",
+    "uncompressed_bytes": 11681161,
+    "uncompressed_sha256": "f882bd8934490f1bb9a6683ac4c4818ce019f73ebf04b0519bf5ae2cef25e1bf",
+    "observations_preserved": true
+  }
+}
