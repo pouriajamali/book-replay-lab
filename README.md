@@ -1,13 +1,13 @@
 # Synthetic Book Replay — C++20 / Python
 
-[![Windows and Linux verification](https://github.com/pouriaquant91/book-replay-lab/actions/workflows/verify.yml/badge.svg)](https://github.com/pouriaquant91/book-replay-lab/actions/workflows/verify.yml)
+[![Windows and Linux verification](https://github.com/pouriajamali/book-replay-lab/actions/workflows/verify.yml/badge.svg)](https://github.com/pouriajamali/book-replay-lab/actions/workflows/verify.yml)
 
-[Release v1.2.0](https://github.com/pouriaquant91/book-replay-lab/releases/tag/v1.2.0) · [Source ZIP](https://github.com/pouriaquant91/book-replay-lab/releases/download/v1.2.0/book-replay-lab-v1.2.0.zip) · [Checksums](https://github.com/pouriaquant91/book-replay-lab/releases/download/v1.2.0/SHA256SUMS.txt) · [Portfolio](https://pouriajamali.site/work/cpp-python-simulation/)
+[Release v1.2.0](https://github.com/pouriajamali/book-replay-lab/releases/tag/v1.2.0) · [Source ZIP](https://github.com/pouriajamali/book-replay-lab/releases/download/v1.2.0/book-replay-lab-v1.2.0.zip) · [Checksums](https://github.com/pouriajamali/book-replay-lab/releases/download/v1.2.0/SHA256SUMS.txt) · [Portfolio](https://pouriajamali.site/work/cpp-python-simulation/)
 
 Two inspectable engineering exercises explore book-state correctness and bounded
 storage choices. Version 1.2 preserves the published 1.1 replay API and adds a
 separate flat-array experiment. The earlier source release remains available in
-the [release history](https://github.com/pouriaquant91/book-replay-lab/releases).
+the [release history](https://github.com/pouriajamali/book-replay-lab/releases).
 
 ## What to review
 
