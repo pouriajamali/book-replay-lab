@@ -41,6 +41,13 @@ compiler, correctness gate or source-consistency check fails. They never install
 a compiler. Windows/Linux CI runs correctness and small measurement-contract
 smoke tests with no speed threshold.
 
+**Expected result:** `verify.py` reports `passed: true` only after both language
+implementations match the fixed expected states and the replay comparison. The
+unit-test command must exit successfully too. The two benchmark commands write
+local measurement files; their timings depend on your machine and are not pass
+thresholds. See [Contributing](CONTRIBUTING.md) for a small reproducible case or
+an additional boundary test.
+
 ## Contracts and recorded results
 
 - [Legacy replay input/output and recovery contract](REPLAY_CONTRACT.md)

@@ -1,5 +1,10 @@
 # Changes
 
+## Unreleased - documentation
+
+- Clarify the source quick start and expected result, and link focused contribution guidance. Runtime behavior, release assets and recorded measurements are unchanged.
+
+
 ## 1.2.0 — 2 November 2026
 
 - Add a separate bounded 64-price-slot-per-side C++20 depth-update experiment.
