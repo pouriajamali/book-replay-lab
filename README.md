@@ -154,6 +154,11 @@ cost, without a speedup or engine-latency claim.
 
 ## Scope and limitations
 
+For a small reproducible problem, start with the
+[synthetic bug-report template](https://github.com/pouriajamali/book-replay-lab/issues/new?template=synthetic-bug-report.md)
+and [contribution guide](CONTRIBUTING.md). Use synthetic data only.
+The template is a contribution aid; the existing runtime release and measurements are unchanged.
+
 These synthetic, single-threaded experiments use normalized integer data, not
 exchange packets. They contain no employer code, real market/account data,
 strategy or broker connection. Replay recovery is a teaching policy; the flat

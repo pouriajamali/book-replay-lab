@@ -5,6 +5,9 @@ case another developer can reproduce, with a clear expected result.
 
 ## Report a problem
 
+Use the [synthetic bug-report template](https://github.com/pouriajamali/book-replay-lab/issues/new?template=synthetic-bug-report.md)
+to start with the checklist below. The Python-only demo does not require a compiler.
+
 Include the commit or release, OS and toolchain versions. Provide the smallest integer update/snapshot sequence, expected levels and ready/sequence state, and actual output.
 Use synthetic inputs only. Remove credentials, account identifiers, personal
 data and employer or proprietary source before opening an issue.

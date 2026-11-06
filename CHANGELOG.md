@@ -16,6 +16,9 @@
 
 ## Unreleased - documentation
 
+- Add a Markdown synthetic bug-report template matching the existing contribution
+  checklist, with separate example input/expected state and a Python-only path.
+  No runtime change, new measurement or replacement release asset.
 - Clarify the source quick start and expected result, and link focused contribution guidance. Runtime behavior, release assets and recorded measurements are unchanged.
 
 
