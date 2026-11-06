@@ -1,4 +1,4 @@
-name: Verify replay and benchmark contract
+name: Verify replay correctness and source package
 on: [push, pull_request, workflow_dispatch]
 permissions:
   contents: read
@@ -10,9 +10,24 @@ jobs:
       - uses: actions/checkout@v6
         with:
           persist-credentials: false
+      - run: python3 demo_recovery.py
       - run: python3 -m unittest discover -s tests -v
-      - run: python3 run_benchmark.py --compiler g++ --events 1000 --samples 3 --warmups 1 --output .build/ci-smoke.json
-      - run: python3 run_flat_benchmark.py --compiler g++ --events 1000 --samples 3 --warmups 1 --output .build/ci-flat-smoke.json
+      - run: python3 verify.py --compiler g++ --report .build/legacy-correctness.json
+      - run: python3 verify_flat.py --compiler g++ --report .build/flat-correctness.json
+      - name: Build exact source package
+        env:
+          SOURCE_SHA: ${{ github.sha }}
+        run: python3 scripts/source_package.py build --commit "$SOURCE_SHA"
+      - name: Inspect actual source ZIP against Git
+        env:
+          SOURCE_SHA: ${{ github.sha }}
+        run: python3 scripts/source_package.py check --commit "$SOURCE_SHA" --repository .
+      - uses: actions/upload-artifact@v4
+        with:
+          name: checked-source-linux
+          path: .build/release-v1.2.1-preview.1/
+          include-hidden-files: true
+          if-no-files-found: error
   windows:
     runs-on: windows-latest
     timeout-minutes: 15
@@ -26,8 +41,49 @@ jobs:
           update: true
           install: mingw-w64-ucrt-x86_64-gcc mingw-w64-ucrt-x86_64-python
       - shell: msys2 {0}
+        run: python demo_recovery.py
+      - shell: msys2 {0}
         run: python -m unittest discover -s tests -v
       - shell: msys2 {0}
-        run: python run_benchmark.py --compiler g++ --events 1000 --samples 3 --warmups 1 --output .build/ci-smoke.json
+        run: python verify.py --compiler g++ --report .build/legacy-correctness.json
       - shell: msys2 {0}
-        run: python run_flat_benchmark.py --compiler g++ --events 1000 --samples 3 --warmups 1 --output .build/ci-flat-smoke.json
+        run: python verify_flat.py --compiler g++ --report .build/flat-correctness.json
+      - name: Build exact source package
+        shell: msys2 {0}
+        env:
+          SOURCE_SHA: ${{ github.sha }}
+        run: python scripts/source_package.py build --commit "$SOURCE_SHA"
+      - name: Inspect actual source ZIP against Git
+        shell: msys2 {0}
+        env:
+          SOURCE_SHA: ${{ github.sha }}
+        run: python scripts/source_package.py check --commit "$SOURCE_SHA" --repository .
+      - uses: actions/upload-artifact@v4
+        with:
+          name: checked-source-windows
+          path: .build/release-v1.2.1-preview.1/
+          include-hidden-files: true
+          if-no-files-found: error
+  compare-packages:
+    needs: [linux, windows]
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: checked-source-*
+          path: checked
+      - name: Compare actual checked packages without rebuilding
+        shell: python
+        run: |
+          from pathlib import Path
+          import hashlib, json
+          directories = sorted(Path('checked').iterdir())
+          assert len(directories) == 2
+          expected = {'book-replay-lab-v1.2.1-preview.1.zip', 'SOURCE-MANIFEST.json', 'SIGNING-PUBLIC-KEY.pub', 'SHA256SUMS.txt'}
+          assert all({p.name for p in d.iterdir()} == expected for d in directories)
+          hashes = {}
+          for name in sorted(expected):
+              first, second = [(d / name).read_bytes() for d in directories]
+              assert first == second, name
+              hashes[name] = hashlib.sha256(first).hexdigest()
+          print(json.dumps({'status': 'BOTH_OS_SOURCE_PACKAGES_IDENTICAL_NO_REBUILD', 'sha256': hashes}, sort_keys=True))

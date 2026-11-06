@@ -1,5 +1,19 @@
 # Changes
 
+## 1.2.1-preview.1 — verification and onboarding
+
+- Add a Python-only six-row recovery demo using the unchanged fixed fixture.
+- Expose the existing flat reference/edge checks through a standalone untimed
+  C++/Python verifier; compare all 128 slots per event and the Python checksum.
+- Make default Windows/Linux CI correctness-only; benchmark runners remain
+  opt-in and retain their exact historical source and measurement files.
+- Add exact clean-Git source packaging, member manifest and package inspection;
+  compare both operating systems' actual products without rebuilding.
+- Document source download, public-key fingerprint, signature/hash verification
+  and the explicit separation between verification and performance experiments.
+- Preserve original cores/APIs, fixtures, nine unit checks, historical raw data
+  and all older release assets/tags. No new performance result or binary.
+
 ## Unreleased - documentation
 
 - Clarify the source quick start and expected result, and link focused contribution guidance. Runtime behavior, release assets and recorded measurements are unchanged.

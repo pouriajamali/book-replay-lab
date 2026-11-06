@@ -60,5 +60,7 @@ threshold, HFT SLA or legacy-map speedup is claimed.
 
 See [the Windows metadata](results/windows-flat-depth-20261102.meta.json),
 [all raw observations (gzip JSON)](results/windows-flat-depth-20261102.json.gz) and
-[interpretation](results/README.md). Windows/Linux CI runs a small correctness
-and measurement-contract smoke test, not reproduction of these timing values.
+[interpretation](results/README.md). Historical CI used small measurement-contract
+smokes, not reproduction of those timing values. Current Windows/Linux CI uses
+`verify_flat.py` for untimed boundary/full-state/reference/Python-checksum checks
+and does not invoke the benchmark. The original benchmark source stays unchanged.

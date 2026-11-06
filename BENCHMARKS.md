@@ -45,8 +45,10 @@ The C++ program uses ordered maps; Python uses dictionaries and explicit best-pr
 selection. This comparison concerns **these implementations and this workload**,
 not a general ranking of languages. Runs are single-threaded, sequential C++ then
 Python, without CPU pinning or an isolated machine. There is no latency SLA or
-performance pass/fail threshold. A successful CI smoke run verifies the measurement
+performance pass/fail threshold. Historical CI smoke runs checked the measurement
 contract and correctness gate, not the published local machine's performance.
+Current default CI is untimed correctness and source-package verification only;
+benchmark execution remains an explicitly chosen separate task.
 
 The default records generated input/output and machine conditions rather than
 presenting a synthetic timing as evidence of historical employer results.

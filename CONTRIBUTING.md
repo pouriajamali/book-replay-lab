@@ -15,8 +15,13 @@ Use Python 3.10+ and a GNU/Clang-compatible C++20 compiler. From the repository 
 
 ```sh
 python verify.py --compiler g++
+python verify_flat.py --compiler g++
 python -m unittest discover -s tests -v
 ```
+
+These checks do not collect performance data. `python demo_recovery.py` provides
+the short Python-only fixture replay. Benchmark runs are separate opt-in work;
+keep historical report files and their measured-source hashes unchanged.
 
 ## Submit a focused change
 

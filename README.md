@@ -2,12 +2,31 @@
 
 [![Windows and Linux verification](https://github.com/pouriajamali/book-replay-lab/actions/workflows/verify.yml/badge.svg)](https://github.com/pouriajamali/book-replay-lab/actions/workflows/verify.yml)
 
-[Release v1.2.0](https://github.com/pouriajamali/book-replay-lab/releases/tag/v1.2.0) · [Source ZIP](https://github.com/pouriajamali/book-replay-lab/releases/download/v1.2.0/book-replay-lab-v1.2.0.zip) · [Checksums](https://github.com/pouriajamali/book-replay-lab/releases/download/v1.2.0/SHA256SUMS.txt) · [Portfolio](https://pouriajamali.site/work/cpp-python-simulation/)
+[Release v1.2.1-preview.1](https://github.com/pouriajamali/book-replay-lab/releases/tag/v1.2.1-preview.1) · [Source ZIP](https://github.com/pouriajamali/book-replay-lab/releases/download/v1.2.1-preview.1/book-replay-lab-v1.2.1-preview.1.zip) · [Checksums](https://github.com/pouriajamali/book-replay-lab/releases/download/v1.2.1-preview.1/SHA256SUMS.txt) · [Portfolio](https://pouriajamali.site/work/cpp-python-simulation/)
 
 Two inspectable engineering exercises explore book-state correctness and bounded
 storage choices. Version 1.2 preserves the published 1.1 replay API and adds a
 separate flat-array experiment. The earlier source release remains available in
 the [release history](https://github.com/pouriajamali/book-replay-lab/releases).
+
+The 1.2.1 preview adds untimed verification, a short recovery demo and source
+package proof. Original cores, APIs, fixtures, benchmark runners and historical
+measurement bytes are unchanged. No new performance run was made for this release.
+
+## Try recovery in one minute
+
+With Python 3.10+ installed, download the source ZIP above, extract the whole
+folder and open a terminal there:
+
+```sh
+python demo_recovery.py
+```
+
+No compiler, Python package, account or network service is needed for this
+Python-only demo. Sequence 13 creates a gap after 11: prices stay visible but
+`ready=0`, and the next update is blocked. Snapshot 20 restores readiness;
+update 21 then applies. The final line starts with `PASS`. Prices alone do not
+mean a usable book. Full verification below checks both language implementations.
 
 ## What to review
 
@@ -24,29 +43,100 @@ the [release history](https://github.com/pouriajamali/book-replay-lab/releases).
   calling them zero-latency execution. Count ordinary hot-path `new`/`new[]` calls
   and retain source/workload hashes and raw measurements.
 
-## Run
+## Verify correctness without measuring performance
 
-Python 3.10+ and an installed GNU/Clang-compatible C++20 compiler; no Python
-packages or network services. Supply a full compiler path when needed.
+Install Python 3.10+ and a GNU/Clang-compatible C++20 compiler; no Python packages
+or network services are required.
 
 ```sh
 python verify.py --compiler g++
+python verify_flat.py --compiler g++
 python -m unittest discover -s tests -v
-python run_flat_benchmark.py --compiler g++ --output results/local-flat.json
-python run_benchmark.py --compiler g++ --output results/local-replay.json
 ```
 
-The runners compile in a checkout-local temporary directory and fail closed if a
-compiler, correctness gate or source-consistency check fails. They never install
-a compiler. Windows/Linux CI runs correctness and small measurement-contract
-smoke tests with no speed threshold.
+Use a full existing compiler path if `g++` is not on PATH, for example
+`"C:\path\to\mingw\bin\g++.exe"` on Windows. The verifiers do not install
+tools. Compiler subprocesses have finite timeouts; missing tools or failed
+checks exit unsuccessfully instead of substituting a result.
 
-**Expected result:** `verify.py` reports `passed: true` only after both language
-implementations match the fixed expected states and the replay comparison. The
-unit-test command must exit successfully too. The two benchmark commands write
-local measurement files; their timings depend on your machine and are not pass
-thresholds. See [Contributing](CONTRIBUTING.md) for a small reproducible case or
-an additional boundary test.
+**Expected results:** the legacy verifier reports `passed: true` after 32 fixed
+scenarios / 74 expected states per language and a 1,001-event comparison. The flat
+verifier reports `passed: true`, 1,006 reference states, all 128 depth slots
+checked per event, edge checks and an independently matched Python checksum.
+It has no clocks or allocation probe. The nine Python unit checks use synthetic
+literals rather than newly measured timing data. See [Contributing](CONTRIBUTING.md).
+
+Default Windows/Linux CI runs these untimed checks and compares actual source
+packages to Git and each other. It does not run benchmark entry points.
+
+## Optional measurements are a separate task
+
+The original runners remain available for an explicitly chosen local experiment:
+
+```sh
+python run_flat_benchmark.py --compiler g++ --output .build/local-flat.json
+python run_benchmark.py --compiler g++ --output .build/local-replay.json
+```
+
+These generate new machine-dependent observations and are unnecessary for the
+demo or correctness checks. Read the measurement contracts first. Do not overwrite
+published historical files or treat local results as a speed threshold, language
+ranking or exchange latency.
+
+## Verify downloaded files
+
+The preview has five files: source ZIP, `SOURCE-MANIFEST.json`,
+`SIGNING-PUBLIC-KEY.pub`, `SHA256SUMS.txt` and `SHA256SUMS.txt.sig`. The manifest
+records the exact source commit/tree and every source file's size and SHA-256;
+the ZIP embeds the same manifest. Packaging uses an explicit clean Git allowlist.
+
+With OpenSSH available, check the public key against an independently trusted
+fingerprint before relying on it:
+
+```sh
+ssh-keygen -lf SIGNING-PUBLIC-KEY.pub
+```
+
+Expected ED25519 fingerprint:
+`SHA256:AgU5bZlJSjUu0KsWMmVEEr+BfXpcMVNroTA33bHcQdU`.
+A key downloaded beside a signature does not establish trust by itself.
+
+Linux, from the folder containing all five downloads:
+
+```sh
+printf 'pouriajamali ' > allowed_signers
+cat SIGNING-PUBLIC-KEY.pub >> allowed_signers
+ssh-keygen -Y verify -f allowed_signers -I pouriajamali -n file -s SHA256SUMS.txt.sig < SHA256SUMS.txt
+sha256sum --check SHA256SUMS.txt
+```
+
+Windows PowerShell, with OpenSSH available:
+
+```powershell
+("pouriajamali " + (Get-Content -Raw .\SIGNING-PUBLIC-KEY.pub).Trim()) | Set-Content -Encoding ascii .\allowed_signers
+cmd /c "ssh-keygen -Y verify -f allowed_signers -I pouriajamali -n file -s SHA256SUMS.txt.sig < SHA256SUMS.txt"
+if ($LASTEXITCODE -ne 0) { throw 'Checksum signature verification failed' }
+Get-Content .\SHA256SUMS.txt | ForEach-Object {
+    $parts = $_ -split '  ', 2
+    if ((Get-FileHash -Algorithm SHA256 -LiteralPath $parts[1]).Hash.ToLowerInvariant() -ne $parts[0]) { throw "Checksum mismatch: $($parts[1])" }
+}
+```
+
+Expect a `Good "file" signature` for `pouriajamali` and matching file hashes.
+Integrity/provenance do not establish performance or production readiness.
+Earlier releases retain their original assets and checksums.
+
+Maintainers with a clean Git checkout can reproduce and inspect the package:
+
+```sh
+python scripts/source_package.py build --commit FULL_40_CHARACTER_HEAD_SHA
+python scripts/source_package.py check --commit FULL_40_CHARACTER_HEAD_SHA --repository .
+```
+
+Use `git rev-parse HEAD` for the SHA. Existing output folders are never
+overwritten; use a fresh `--directory` for another build. The checker compares
+source members, manifest, public key and hashes. SSH verification is separate;
+without `--repository`, the checker proves manifest integrity rather than Git bytes.
 
 ## Contracts and recorded results
 

@@ -16,8 +16,8 @@ engine latency. Separate aggregate batches retain their raw duration and
 amortized cost in the report, not an individual-event percentile or speedup.
 
 No CPU affinity or isolated host was used. See the [measurement contract](../FLAT_DEPTH.md),
-raw observations and source/workload hashes. CI smoke checks validate correctness
-and measurement fields, not this machine's timings. A version/code hash does not
+raw observations and source/workload hashes. Historical CI smoke checks validated
+correctness and measurement fields, not this machine's timings. A version/code hash does not
 by itself establish GitHub publication or a CI pass.
 
 The metadata binds both compressed and decompressed SHA256 hashes. Read the full
@@ -40,5 +40,7 @@ Percentiles describe batches; amortized nanoseconds per event are not individual
 measured event latency. Whole-process peak memory includes runtime and retained
 input. This small ordered-map/dictionary workload is neither a language ranking
 nor employer, exchange, order-entry or production HFT performance evidence.
-Windows/Linux CI runs a correctness and measurement-contract smoke test, not a
-reproduction of this machine's timing values. No speed threshold is enforced.
+Historical Windows/Linux CI ran correctness and measurement-contract smokes,
+not a reproduction of this machine's timing values. Current default CI uses
+untimed verifiers and source-package checks. No new measurements were generated
+for the 1.2.1 verification release; no speed threshold is enforced.
