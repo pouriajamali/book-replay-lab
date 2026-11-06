@@ -13,6 +13,7 @@ MANIFEST = "SOURCE-MANIFEST.json"
 KEY = "SIGNING-PUBLIC-KEY.pub"
 ALLOWED = frozenset({
     ".gitattributes", ".gitignore", ".github/workflows/verify.yml",
+    ".github/ISSUE_TEMPLATE/synthetic-bug-report.md",
     "BENCHMARKS.md", "CHANGELOG.md", "CONTRIBUTING.md", "FLAT_DEPTH.md",
     "LICENSE", "README.md", "REPLAY_CONTRACT.md", KEY,
     "benchmark.cpp", "benchmark.py", "book.hpp", "book_replay.cpp", "book_replay.py",
