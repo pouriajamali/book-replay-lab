@@ -39,7 +39,7 @@ jobs:
         with:
           msystem: UCRT64
           update: true
-          install: mingw-w64-ucrt-x86_64-gcc mingw-w64-ucrt-x86_64-python
+          install: git mingw-w64-ucrt-x86_64-gcc mingw-w64-ucrt-x86_64-python
       - shell: msys2 {0}
         run: python demo_recovery.py
       - shell: msys2 {0}
