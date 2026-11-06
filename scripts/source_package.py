@@ -28,7 +28,11 @@ def sha(raw):
     return hashlib.sha256(raw).hexdigest()
 
 def git(root, *args):
-    return subprocess.check_output(["git", "-C", str(root), *args], stderr=subprocess.PIPE)
+    result = subprocess.run(["git", "-C", str(root), *args], stdout=subprocess.PIPE,
+                            stderr=subprocess.PIPE, timeout=30)
+    if result.returncode:
+        raise RuntimeError("Git source read failed: " + result.stderr.decode("utf-8", "replace")[:4000])
+    return result.stdout
 
 def snapshot(root, commit):
     if not re.fullmatch("[0-9a-f]{40}", commit) or git(root, "rev-parse", "HEAD").decode().strip() != commit:
@@ -47,7 +51,13 @@ def snapshot(root, commit):
         files[name] = git(root, "show", commit + ":" + name)
     if set(files) != ALLOWED:
         raise ValueError("Source member allowlist differs")
-    return files, git(root, "rev-parse", commit + "^{tree}").decode().strip()
+    # Read the immutable commit header directly; avoid revision-peeling syntax
+    # across mixed MSYS2/native Windows process argument handling.
+    header = git(root, "cat-file", "-p", commit).splitlines()[0]
+    tree = re.fullmatch(rb"tree ([0-9a-f]{40})", header)
+    if tree is None:
+        raise ValueError("Invalid Git commit tree header")
+    return files, tree[1].decode("ascii")
 
 def description(files, commit, tree):
     return {"schema": "book-replay-source-v1", "version": VERSION,
