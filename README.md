@@ -172,3 +172,5 @@ trade-offs and exact measurement boundaries.
 Created with AI assistance for Pouria Jamali's public portfolio. No private
 repository source was used. The source, tests and recorded measurements support
 discussion of these examples, separate from historical employer experience.
+
+[CI resource policy](docs/CI-POLICY.md): documentation-only changes get real lightweight document/pipeline checks; source, tag and manual runs retain native validation. Published runtime tags and release assets remain unchanged.
