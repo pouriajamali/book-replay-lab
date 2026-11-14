@@ -16,6 +16,9 @@
 
 ## Unreleased - documentation
 
+- Add a readiness decision guide distinguishing stale updates, rejected snapshots,
+  retained levels and valid empty sides using existing fixtures. Runtime, API,
+  measurement bytes and published packages remain unchanged.
 - Add a Markdown synthetic bug-report template matching the existing contribution
   checklist, with separate example input/expected state and a Python-only path.
   No runtime change, new measurement or replacement release asset.
