@@ -2,7 +2,7 @@
 
 [![Windows and Linux verification](https://github.com/pouriajamali/book-replay-lab/actions/workflows/verify.yml/badge.svg)](https://github.com/pouriajamali/book-replay-lab/actions/workflows/verify.yml)
 
-[Release v1.2.1-preview.1](https://github.com/pouriajamali/book-replay-lab/releases/tag/v1.2.1-preview.1) · [Source ZIP](https://github.com/pouriajamali/book-replay-lab/releases/download/v1.2.1-preview.1/book-replay-lab-v1.2.1-preview.1.zip) · [Checksums](https://github.com/pouriajamali/book-replay-lab/releases/download/v1.2.1-preview.1/SHA256SUMS.txt) · [Portfolio](https://pouriajamali.site/work/cpp-python-simulation/)
+[Release v1.2.1-preview.1](https://github.com/pouriajamali/book-replay-lab/releases/tag/v1.2.1-preview.1) · [Source ZIP](https://github.com/pouriajamali/book-replay-lab/releases/download/v1.2.1-preview.1/book-replay-lab-v1.2.1-preview.1.zip) · [Checksums](https://github.com/pouriajamali/book-replay-lab/releases/download/v1.2.1-preview.1/SHA256SUMS.txt) · [Portfolio](https://pouriajamali.site/work/book-replay-lab/)
 
 Two inspectable engineering exercises explore book-state correctness and bounded
 storage choices. Version 1.2 preserves the published 1.1 replay API and adds a
@@ -27,37 +27,6 @@ Python-only demo. Sequence 13 creates a gap after 11: prices stay visible but
 `ready=0`, and the next update is blocked. Snapshot 20 restores readiness;
 update 21 then applies. The final line starts with `PASS`. Prices alone do not
 mean a usable book. Full verification below checks both language implementations.
-
-## Read the readiness state
-
-For the legacy normalized replay, check `ready` before using retained levels.
-The reason describes the processed record; visible prices alone do not establish
-readiness. The existing [replay contract](REPLAY_CONTRACT.md) defines each field.
-
-| Reason | `ready` | Meaning and next step |
-| --- | --- | --- |
-| `SNAPSHOT` or `UPDATE` | `1` | The record was accepted. Continue normalized replay; a side may be empty after valid deletes. |
-| `STALE` | `1` | Ignore the old update; keep the accepted sequence and levels. |
-| `GAP` or `DISCONNECTED` | `0` | Retained prices may be stale. Updates stay blocked until a valid non-regressing snapshot. |
-| `NOT_READY` | `0` | The update was not applied. Supply an explicit valid snapshot. |
-| `STALE_SNAPSHOT` | `0` | The snapshot regressed and was rejected; it did not restore readiness. |
-| `INVALID`, `CROSSED` or `UNKNOWN_DELETE` | `0` | Keep accepted levels and sequence; require a valid snapshot before further updates. |
-
-A valid snapshot may have the **same** sequence as the last accepted record;
-it must not have a lower sequence. Valid deletes can leave a side empty while
-`ready=1`, so missing prices alone do not mean the book is not ready either.
-In the existing [recovery fixture](fixtures.json), both the gap and the blocked
-next update retain sequence 11 and the same prices:
-
-```text
-GAP|0|11|101|2|103|4
-NOT_READY|0|11|101|2|103|4
-```
-
-The explicit snapshot at 20 restores readiness, and update 21 then applies.
-This flag expresses the synthetic teaching policy; it does not authenticate a
-feed or establish production readiness. The separate flat-array experiment has
-no recovery protocol. No new runtime or performance result is introduced here.
 
 ## What to review
 
@@ -168,6 +137,37 @@ Use `git rev-parse HEAD` for the SHA. Existing output folders are never
 overwritten; use a fresh `--directory` for another build. The checker compares
 source members, manifest, public key and hashes. SSH verification is separate;
 without `--repository`, the checker proves manifest integrity rather than Git bytes.
+
+## Read the readiness state
+
+For the legacy normalized replay, check `ready` before using retained levels.
+The reason describes the processed record; visible prices alone do not establish
+readiness. The existing [replay contract](REPLAY_CONTRACT.md) defines each field.
+
+| Reason | `ready` | Meaning and next step |
+| --- | --- | --- |
+| `SNAPSHOT` or `UPDATE` | `1` | The record was accepted. Continue normalized replay; a side may be empty after valid deletes. |
+| `STALE` | `1` | Ignore the old update; keep the accepted sequence and levels. |
+| `GAP` or `DISCONNECTED` | `0` | Retained prices may be stale. Updates stay blocked until a valid non-regressing snapshot. |
+| `NOT_READY` | `0` | The update was not applied. Supply an explicit valid snapshot. |
+| `STALE_SNAPSHOT` | `0` | The snapshot regressed and was rejected; it did not restore readiness. |
+| `INVALID`, `CROSSED` or `UNKNOWN_DELETE` | `0` | Keep accepted levels and sequence; require a valid snapshot before further updates. |
+
+A valid snapshot may have the **same** sequence as the last accepted record;
+it must not have a lower sequence. Valid deletes can leave a side empty while
+`ready=1`, so missing prices alone do not mean the book is not ready either.
+In the existing [recovery fixture](fixtures.json), both the gap and the blocked
+next update retain sequence 11 and the same prices:
+
+```text
+GAP|0|11|101|2|103|4
+NOT_READY|0|11|101|2|103|4
+```
+
+The explicit snapshot at 20 restores readiness, and update 21 then applies.
+This flag expresses the synthetic teaching policy; it does not authenticate a
+feed or establish production readiness. The separate flat-array experiment has
+no recovery protocol. No new runtime or performance result is introduced here.
 
 ## Contracts and recorded results
 
