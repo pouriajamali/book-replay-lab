@@ -15,8 +15,8 @@ measurement bytes are unchanged. No new performance run was made for this releas
 
 ## Try recovery in one minute
 
-With Python 3.10+ installed, download the source ZIP above, extract the whole
-folder and open a terminal there:
+With a supported, patched Python release installed (see setup guidance below),
+download the source ZIP above, extract the whole folder and open a terminal there:
 
 ```sh
 python demo_recovery.py
@@ -45,8 +45,9 @@ mean a usable book. Full verification below checks both language implementations
 
 ## Verify correctness without measuring performance
 
-Install Python 3.10+ and a GNU/Clang-compatible C++20 compiler; no Python packages
-or network services are required.
+Use a supported, patched Python release and a GNU/Clang-compatible C++20 compiler
+from a maintained platform toolchain; no Python packages or network services are
+required.
 
 ```sh
 python verify.py --compiler g++
@@ -68,6 +69,23 @@ literals rather than newly measured timing data. See [Contributing](CONTRIBUTING
 
 Default Windows/Linux CI runs these untimed checks and compares actual source
 packages to Git and each other. It does not run benchmark entry points.
+
+## Supported setup
+
+As checked on 17 November 2026, Python 3.10 is end-of-life. Its historical
+syntax-compatibility floor is unchanged, but it is no longer a recommended setup.
+Use a maintained release with security updates from its provider; the
+[official Python support table](https://devguide.python.org/versions/) lists
+supported branches. Python 3.12 remains in security support through October 2028.
+
+The existing Linux CI uses Ubuntu 24.04's system Python 3.12 and GCC in explicit
+C++20 mode; [Ubuntu 24.04 maintenance](https://ubuntu.com/about/release-cycle)
+continues through May 2029. Windows keeps the existing UCRT64 GCC/Python packages
+with [MSYS2 update enabled](https://github.com/msys2/setup-msys2#update).
+Keep those maintained routes; this documentation repair does not install or
+upgrade a compiler, change CI, add CMake or requalify arbitrary newer toolchains.
+Historical measurements and downloaded release bytes retain their original
+toolchain identities and are not evidence for a newly selected local runtime.
 
 ## Optional measurements are a separate task
 

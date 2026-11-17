@@ -16,6 +16,9 @@
 
 ## Unreleased - documentation
 
+- Correct setup guidance after Python 3.10 reached end-of-life; recommend
+  maintained Python/platform toolchains and document the existing supported CI
+  routes. Runtime, dependencies, fixtures, CI and published packages are unchanged.
 - Add a readiness decision guide distinguishing stale updates, rejected snapshots,
   retained levels and valid empty sides using existing fixtures. Runtime, API,
   measurement bytes and published packages remain unchanged.

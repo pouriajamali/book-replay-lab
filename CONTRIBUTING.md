@@ -14,7 +14,10 @@ data and employer or proprietary source before opening an issue.
 
 ## Run the checks
 
-Use Python 3.10+ and a GNU/Clang-compatible C++20 compiler. From the repository root:
+Use a supported, patched Python release and a maintained GNU/Clang-compatible
+C++20 compiler. See the README's [supported setup](README.md#supported-setup);
+Python 3.10 is only the historical compatibility floor, not a supported setup
+recommendation. From the repository root:
 
 ```sh
 python verify.py --compiler g++
