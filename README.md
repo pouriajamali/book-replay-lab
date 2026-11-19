@@ -1,5 +1,17 @@
 # Synthetic Book Replay — C++20 / Python
 
+<!-- reviewer-entry:begin -->
+## Start with the implementation
+
+C++ implements book state and the bounded flat-array experiment. Python provides a separate implementation, reference checks and the small recovery demo; the catalogue labels both languages.
+
+[book.hpp](book.hpp) → [book_replay.cpp](book_replay.cpp) → [demo_recovery.py](demo_recovery.py)
+
+[Preview releases](https://github.com/pouriajamali/book-replay-lab/releases)
+
+The existing setup, validation results and release boundaries continue below.
+<!-- reviewer-entry:end -->
+
 [![Windows and Linux verification](https://github.com/pouriajamali/book-replay-lab/actions/workflows/verify.yml/badge.svg)](https://github.com/pouriajamali/book-replay-lab/actions/workflows/verify.yml)
 
 [Release v1.2.1-preview.1](https://github.com/pouriajamali/book-replay-lab/releases/tag/v1.2.1-preview.1) · [Source ZIP](https://github.com/pouriajamali/book-replay-lab/releases/download/v1.2.1-preview.1/book-replay-lab-v1.2.1-preview.1.zip) · [Checksums](https://github.com/pouriajamali/book-replay-lab/releases/download/v1.2.1-preview.1/SHA256SUMS.txt) · [Portfolio](https://pouriajamali.site/work/book-replay-lab/)
